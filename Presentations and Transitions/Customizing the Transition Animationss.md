@@ -20,9 +20,19 @@ transition 代理是 transition 动画和自定义 presentation 的起点。Tran
 
 - **Presentation 控制器**。视图控制器在屏幕上期间 presentation 控制器管理 presentation 样式。系统为内建的 presentation 样式提供 presentation 控制器并且你也能为你自己的 presentation 样式提供自定义的 presentation 控制器，查看 Creating Custom Presentations。
 
+分配 transition 代理给视图控制器的 transitioningDelegate 属性告诉 UIKit 你想要执行自定义的 transition 或 presentation。你的代理能在它提供的对象上做出选择。如果你不提供 animator 对象，UIKit 使用视图控制器的 modalTransitionStyle 属性里的标准 transition 动画。
 
+图10-1展示了 transition 代理和 animator 对象到被展示视图控制器的关系。presentation 控制器只在视图控制器的 modalPresentationStyle 属性被设置为 UIModalPresentationCustom 时使用。
+
+![VCPG_custom-presentation-and-animator-objects_10-1_2x](/Users/andywu/Documents/iOS/View-Controller-Programming-Guide-for-iOS/resources/VCPG_custom-presentation-and-animator-objects_10-1_2x.png)
+
+关于如何实现你的 transitioning 代理的信息，查看 Implementing the Transitioning Delegate。关于 transitioning 代理对象的方法的更多信息，查看 UIViewControllerTransitioningDelegate Protocol Reference。
 
 **自定义动画序列**
+
+当被展示的视图控制器的 transitioningDelegate 属性包含一个有效对象时，UIKit 使用你提供的自定义 animator 对象呈现它。当它准备呈现时，UIKit 调用你的 transitioning 代理的 animationControllerForPresentedController:presentingController:sourceController: 方法来获取自定义 animator 对象。如果对象是可用的，UIKit 执行以下步骤：
+
+1. UIKit 调用 transitioning 代理的 interactionControllerForPresentation: 方法查看交互式 animator 对象是否可用。如果那个方法返回 nil，UIKit 执行不带交互的动画。
 
 **Transitioning Context 对象**
 
