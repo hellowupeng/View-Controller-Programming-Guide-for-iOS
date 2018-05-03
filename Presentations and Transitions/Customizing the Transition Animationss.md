@@ -34,6 +34,36 @@ transition 代理是 transition 动画和自定义 presentation 的起点。Tran
 
 1. UIKit 调用 transitioning 代理的 interactionControllerForPresentation: 方法查看交互式 animator 对象是否可用。如果那个方法返回 nil，UIKit 执行不带交互的动画。
 
+2. UIKit 调用 animator 对象的 transition 方法获取动画时间。
+
+3. UIKit 调用合适的方法开始动画：
+
+   - 对于非交互式动画，UIKit 调用 animator 对象的 animateTransition: 方法。
+   - 对于交互式动画，UIKit 调用交互式 animator 对象的 startInteractiveTransition: 方法。
+
+4. UIKit 等待 animator 对象调用 context transitioning 对象的 completeTransition: 方法。
+
+   你的自定义 animator 在动画完成后，通常在动画完成 block 里调用这个方法。调用这个方法结束 transition 并让 UIKit 知道它能调用 presentViewController:animated:completion: 方法的完成处理器并调用 animator 对象自己的 animationEnded: 方法。
+
+在 dismiss 视图控制器时，UIKit 调用 transitioning 代理的 animationControllerForDismissedController: 方法并执行以下步骤：
+
+1. UIKit 调用 transitioning 代理的 interactionControllerForDismissal: 方法查看交互式 animator 对象是否可用。如果那个方法返回 nil，UIKit执行不带用户交互的动画。
+
+2. UIKit 调用 animator 对象的 transitionDuration: 方法获取动画持续时间。
+
+3. UIKit 调用合适的方法启动动画：
+
+   - 对于非交互式动画，UIKit 调用 animator 对象的 animateTransition 方法。
+   - 对于交互式动画，UIKit 调用交互式 animator 对象的 startInteractiveTransition: 方法。
+
+4. UIKit 等待 animator 对象调用 context transitioning 对象的 completeTransition: 方法。
+
+   你的自定义 animator 在它的动画结束后，通常在动画完成 bolock 里调用这个方法。调用这个方法结束 transition 并让 UIKit 知道它能调用 presentViewController:animated:completion: 方法的完成处理器并调用 animator 对象自己的 animationEnded: 方法。
+
+   > 重要
+   >
+   > 在动画结束后调用 completeTransition: 方法是必要的。UIKit 不会结束 transition 过程，因此直到你调用那个方法才会返回控制给你的应用。
+
 **Transitioning Context 对象**
 
 **Transition 协调器（Coordinator）
